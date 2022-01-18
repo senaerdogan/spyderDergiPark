@@ -1,0 +1,11 @@
+LICENCE
+README.md
+pyproject.toml
+setup.cfg
+src/spyderDergiPark/__init__.py
+src/spyderDergiPark/createTopicLinkDict.py
+src/spyderDergiPark/spyderDergiPark.py
+src/spyderDergiPark.egg-info/PKG-INFO
+src/spyderDergiPark.egg-info/SOURCES.txt
+src/spyderDergiPark.egg-info/dependency_links.txt
+src/spyderDergiPark.egg-info/top_level.txt

@@ -8,24 +8,49 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 from pathlib import Path
+from .createTopicLinkDict import createTopicLinkDict
 
 
-def loadTopicPickle():
-    with open('topicLinkDict.pickle', 'rb') as handle:
-        topicLinkDict = pickle.load(handle)
-    return topicLinkDict
+def defineDriverPath(path):
+    if path is None:
+        return "chromedriver.exe"
+    return path
 
 
-def loadDriver(headless):
+def defineOutputPath(path):
+    if path is None:
+        return "articles"
+    return path
+
+
+def loadDriver(headless, driverPath):
     options = Options()
     options.headless = True
-    s = Service("chromedriver.exe")
+    s = Service(driverPath)
 
     if headless:
         driver = webdriver.Chrome(options=options, service=s)
     else:
         driver = webdriver.Chrome(service=s)
     return driver
+
+
+def refreshTopicPickle(dictPath="topicLinkDict.pickle", driverPath=None):
+    driverPath = defineDriverPath(driverPath)
+    createTopicLinkDict(dictPath, driverPath)
+
+
+def loadTopicPickle(dictPath="topicLinkDict.pickle", driverPath=None):
+    try:
+        with open(dictPath, 'rb') as handle:
+            topicLinkDict = pickle.load(handle)
+        return topicLinkDict
+    except FileNotFoundError:
+        driverPath = defineDriverPath(driverPath)
+        refreshTopicPickle(dictPath, driverPath)
+        with open(dictPath, 'rb') as handle:
+            topicLinkDict = pickle.load(handle)
+        return topicLinkDict
 
 
 def getNumberOfArticlesToDownload(driver, maxArticle):
@@ -37,14 +62,8 @@ def getNumberOfArticlesToDownload(driver, maxArticle):
     return maxArticle
 
 
-def definePath(path):
-    if path is None:
-        return "articles"
-    return path
-
-
 def download(driver, maxArticle, language, current_url, path):
-    path = definePath(path)
+    path = defineOutputPath(path)
     Path(path).mkdir(parents=True, exist_ok=True)
     numberOfPages = int(driver.find_element(By.XPATH,
                                             '/html/body/div[2]/div/div/div/div/div/div/div[2]/div[2]/div[2]/div[3]/ul/li[8]/a').get_attribute(
@@ -98,11 +117,12 @@ def download(driver, maxArticle, language, current_url, path):
         driver.get(new_page)
 
 
-def searchByTopic(topic, maxArticle=None, headless=False, language="türkçe"):
+def searchByTopic(topic, maxArticle=None, headless=False, language="türkçe", driverPath=None):
     language = "".join(language.lower().split())
     topic = "".join(topic.lower().split())
-    driver = loadDriver(headless)
-    topicLinkDict = loadTopicPickle()
+    driverPath = defineDriverPath(driverPath)
+    driver = loadDriver(headless, driverPath)
+    topicLinkDict = loadTopicPickle(driverPath=driverPath)
     driver.get(topicLinkDict[topic])
     time.sleep(5)
 
@@ -110,9 +130,9 @@ def searchByTopic(topic, maxArticle=None, headless=False, language="türkçe"):
     return driver, current_url
 
 
-def searchByPhrase(searchPhrase, maxArticle=None, headless=False, language="türkçe"):
+def searchByPhrase(searchPhrase, maxArticle=None, headless=False, language="türkçe", driverPath=None):
     language = "".join(language.lower().split())
-    driver = loadDriver(headless)
+    driver = loadDriver(headless, defineDriverPath(driverPath))
     driver.get('https://dergipark.org.tr/tr/search?q=&section=articles')
     time.sleep(5)
 
@@ -126,11 +146,12 @@ def searchByPhrase(searchPhrase, maxArticle=None, headless=False, language="tür
     return driver, current_url
 
 
-def searchByTopicAndPhrase(topic, searchPhrase, maxArticle=None, headless=False, language="türkçe"):
+def searchByTopicAndPhrase(topic, searchPhrase, maxArticle=None, headless=False, language="türkçe", driverPath=None):
     language = "".join(language.lower().split())
     topic = "".join(topic.lower().split())
-    driver = loadDriver(headless)
-    topicLinkDict = loadTopicPickle()
+    driverPath = defineDriverPath(driverPath)
+    driver = loadDriver(headless, driverPath)
+    topicLinkDict = loadTopicPickle(driverPath=driverPath)
     driver.get(topicLinkDict[topic])
     time.sleep(5)
 

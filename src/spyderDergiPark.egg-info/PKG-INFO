@@ -1,0 +1,24 @@
+Metadata-Version: 2.1
+Name: spyderDergiPark
+Version: 0.0.8
+Summary: A Python library that enables downloading articles from DergiPark (https://dergipark.org.tr) related to a topic or a search phrase.
+Home-page: https://github.com/senaerdogan/spyderDergiPark
+Author: Sena Erdogan
+Author-email: saadetsenaerdogan@gmail.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/senaerdogan/spyderDergiPark/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENCE
+
+A python code for searching and downloading articles from DergiPark. 
+
+First, install a driver from the driver links listed here: https://pypi.org/project/selenium/
+
+Further developments are on the way.
+
+
