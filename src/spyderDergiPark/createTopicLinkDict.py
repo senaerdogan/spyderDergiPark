@@ -6,7 +6,7 @@ from selenium.common.exceptions import NoSuchElementException
 import time
 import pickle
 import re
-
+from tqdm import tqdm
 
 def createTopicLinkDict(dictPath, driverPath):
     options = Options()
@@ -14,12 +14,20 @@ def createTopicLinkDict(dictPath, driverPath):
     s = Service(driverPath)
     driver = webdriver.Chrome(options=options, service=s)
 
+    print('Dictionary creation begins.')
     driver.get("https://dergipark.org.tr/tr/search?section=articles")
     time.sleep(5)
 
     lastException = 0
     i = 2
     topicLinkDict = {}
+
+    numberOfTopics = len(
+        driver.find_elements(By.XPATH, '//*[@id="collapsible_portlet_2"]/div[2]/div/div'))
+
+    numberOfGroups = len(driver.find_elements(By.XPATH,'//*[@id="collapsible_portlet_2"]/div[2]/div/div[contains(@class, "kt-widget-18__item bucket-group-title ")]'))
+
+    pbar = tqdm(total=numberOfTopics-numberOfGroups)
 
     while True:
         try:
@@ -37,9 +45,14 @@ def createTopicLinkDict(dictPath, driverPath):
             if (i - lastException) == 1:
                 with open(dictPath, 'wb') as handle:
                     pickle.dump(topicLinkDict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+                    pbar.update(1)
                 break
             lastException = i
             i += 1
             continue
+        pbar.update(1)
 
+    print('Dictionary created.')
+    pbar.close()
     driver.quit()
+
