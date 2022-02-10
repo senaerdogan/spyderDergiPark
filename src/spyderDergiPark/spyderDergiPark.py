@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 from pathlib import Path
-from createTopicLinkDict import createTopicLinkDict
+from .createTopicLinkDict import createTopicLinkDict
 from tqdm import tqdm
 
 
@@ -57,9 +57,8 @@ def loadTopicPickle(dictPath="topicLinkDict.pickle", driverPath=None):
 def getNumberOfArticlesToDownload(driver, maxArticle):
     if maxArticle is None:
         # total articles
-        return int("".join(
-            driver.find_element(By.XPATH, '//*[@id="search-sections"]/div[1]/a/span[2]/span[2]').get_attribute(
-                "textContent").split(".")))
+        return 9600 #DergiPark currently lists max 9600 articles. May need to change it later.
+        #return int("".join(driver.find_element(By.XPATH, '//*[@id="search-sections"]/div[1]/a/span[2]/span[2]').get_attribute("textContent").split(".")))
     return maxArticle
 
 
